@@ -18,6 +18,7 @@ public class FilterBox {
             case "category":
                 return e -> e.getCategory().equals(query);
             case "price":
+                //Todo translate price correctly to integer
                 return e -> e.getPrice() == Integer.parseInt(query);
             case "freeShipping":
                 return e -> e.isFreeShipping() == query.equals("SI");
