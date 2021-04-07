@@ -1,15 +1,11 @@
 package com.itbchallenge.eshop.utils;
 
 import com.itbchallenge.eshop.dtos.ProductDTO;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
-@NoArgsConstructor
 public class FilterBox {
     //This is a lazy strategy pattern implementation
     public static Predicate<ProductDTO> getFilter(String type,String query){

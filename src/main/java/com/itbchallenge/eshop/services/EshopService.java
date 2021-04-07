@@ -14,14 +14,14 @@ import java.util.function.Predicate;
 
 @Service
 public class EshopService {
-
     @Autowired
     private ProductRepository productRepository;
 
-    public ArrayList<ProductDTO> getProducts(HashMap<String,String> arguments){
 
+    public ArrayList<ProductDTO> getProducts(HashMap<String,String> arguments){
         SortStrategy sortStrat = null;
         ArrayList<ProductDTO> productos = productRepository.getAllProducts();
+
 
         if (!arguments.isEmpty()) {
             for (String key : arguments.keySet()) {

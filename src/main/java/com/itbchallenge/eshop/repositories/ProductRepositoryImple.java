@@ -1,16 +1,19 @@
 package com.itbchallenge.eshop.repositories;
 
 import com.itbchallenge.eshop.dtos.ProductDTO;
+import com.itbchallenge.eshop.exceptions.InternalErrorException;
 import com.itbchallenge.eshop.utils.FilterBox;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,19 +26,27 @@ public class ProductRepositoryImple implements ProductRepository {
     private AtomicInteger productIds = new AtomicInteger();
     private HashMap<Integer, ProductDTO> repo = new HashMap<>();
 
-    @Override
-    public void loadRepositoryFromDisk(String filename) {
-        try {
+    public ProductRepositoryImple() throws InternalErrorException {
+        this.loadRepositoryFromDisk("dbProductos.csv");
+    }
 
-            Reader csvFile = Files.newBufferedReader(Path.of(filename));
-            CSVParser csvParser = new CSVParser(csvFile, CSVFormat.DEFAULT); //Apache commons csv module (added in the pom)
+    @Override
+    public void loadRepositoryFromDisk(String filename) throws InternalErrorException {
+        try {
+            //File file = ResourceUtils.getFile("classpath:dbProductos.csv");
+            //System.out.println(file.toString());
+
+            Resource res = new ClassPathResource(filename);
+            InputStream in = res.getInputStream();
+            Reader csvFile = new InputStreamReader(in);
+            CSVParser csvParser = new CSVParser(csvFile, CSVFormat.DEFAULT.withHeader()); //Apache commons csv module (added in the pom)
 
             for (CSVRecord record : csvParser) {
                 ProductDTO prod = new ProductDTO();
                 prod.setName(record.get("name"));
                 prod.setCategory(record.get("category"));
                 prod.setBrand(record.get("brand"));
-                prod.setPrice(Integer.parseInt(record.get("price")));
+                prod.setPrice(Float.parseFloat(record.get("price").replaceAll("[$.]","")));
                 prod.setQuantity(Integer.parseInt(record.get("quantity")));
                 prod.setFreeShipping(record.get("freeShipping").equals("SI"));
                 prod.setPrestige(record.get("prestige").length());
@@ -47,7 +58,7 @@ public class ProductRepositoryImple implements ProductRepository {
 
         } catch (IOException e) {
             //TODO: Do something better here? -> http.internalerror?????
-            e.printStackTrace();
+            throw new InternalErrorException();
         }
 
 

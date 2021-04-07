@@ -1,13 +1,14 @@
 package com.itbchallenge.eshop.repositories;
 
 import com.itbchallenge.eshop.dtos.ProductDTO;
+import com.itbchallenge.eshop.exceptions.InternalErrorException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface ProductRepository {
 
-    public void loadRepositoryFromDisk(String filename);
+    public void loadRepositoryFromDisk(String filename) throws InternalErrorException;
 
     public void saveRepositoryToDisk(HashMap<Integer,ProductDTO> repo, String filename);
 
