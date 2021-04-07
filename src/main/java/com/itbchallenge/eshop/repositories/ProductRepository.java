@@ -15,9 +15,9 @@ public interface ProductRepository {
 
     public ProductDTO getProductById(int productId);
 
-    public ArrayList<ProductDTO> getProductBy(String param1, String value1, String param2, String value2);
+    //public ArrayList<ProductDTO> getProductBy(String param1, String value1, String param2, String value2);
 
-    public ArrayList<ProductDTO> getProductBy(String param1, String value1);
+    public ArrayList<ProductDTO> getProductsBy(String param1, String value1);
 
 
 }

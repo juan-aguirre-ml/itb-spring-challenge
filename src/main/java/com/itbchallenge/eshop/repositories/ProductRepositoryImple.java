@@ -70,26 +70,9 @@ public class ProductRepositoryImple implements ProductRepository {
         return this.repo.getOrDefault(productId, null);
     }
 
-    //Filters products by 2 parameters.
-    public ArrayList<ProductDTO> getProductBy(String param1, String value1, String param2, String value2) {
-        //Filters using the specified parameters and values. Returns an arraylist of products
-        //Example name = "Shoe", brand = "Nike"
-        ArrayList<ProductDTO> arr = this.getAllProducts();
-        ArrayList<ProductDTO> ret = null;
-
-        //Get the correct filters from FilterBox class
-        Predicate<ProductDTO> p1 = FilterBox.getFilter(param1, value1);
-        Predicate<ProductDTO> p2 = FilterBox.getFilter(param2, value2);
-
-        //Check if 2 filters are passed
-        if (p1 != null && p2 != null) {
-            ret = new ArrayList<ProductDTO>(arr.stream().filter(p1.and(p2)).collect(Collectors.toList()));
-            return ret;
-        } else
-            return null;
-    }
-
-    //Filters products by only one parameter
+    //Filters products by one parameter.
+    //Todo: This may not be used after all. Check and delete if necesary.
+    @Override
     public ArrayList<ProductDTO> getProductsBy(String param1, String value1) {
         ArrayList<ProductDTO> arr = this.getAllProducts();
         ArrayList<ProductDTO> ret = null;
@@ -100,7 +83,7 @@ public class ProductRepositoryImple implements ProductRepository {
         if (p1 != null) {
             ret = new ArrayList<ProductDTO>(arr.stream().filter(p1).collect(Collectors.toList()));
             return ret;
-        } else
-            return null;
+        } else //if filter empty, return all products.
+            return arr;
     }
 }
