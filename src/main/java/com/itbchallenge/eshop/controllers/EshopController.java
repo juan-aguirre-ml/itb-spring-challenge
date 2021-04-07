@@ -17,7 +17,7 @@ import java.util.Map;
 public class EshopController {
 
     @Autowired
-    EshopService eshopService;
+    private EshopService eshopService;
 
     @GetMapping("/articles")
     public ArrayList<ProductDTO> getProducts(@RequestParam Map<String,String> queryParams){
