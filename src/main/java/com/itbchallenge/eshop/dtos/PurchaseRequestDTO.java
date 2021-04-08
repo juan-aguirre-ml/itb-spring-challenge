@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PurchaseRequestDTO {
     private TicketDTO ticket;
-    private StatusCodeDTO statusCodeDTO;
+    private StatusCodeDTO statusCode;
 }

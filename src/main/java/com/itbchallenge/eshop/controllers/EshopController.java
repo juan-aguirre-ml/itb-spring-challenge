@@ -39,7 +39,7 @@ public class EshopController {
     public ResponseEntity handlerException(InvalidItemException exception){
         StatusCodeDTO error = new StatusCodeDTO();
         error.setMessage(exception.getMessage());
-        error.setCode(HttpStatus.NOT_FOUND);
+        error.setCode(HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.badRequest().body(error);
     }
     @ExceptionHandler(Exception.class)

@@ -26,22 +26,18 @@ public class PurchaseRequestServiceImple implements PurchaseRequestService{
     public TicketDTO generateTicket(ArticlesDTO articles) throws InvalidItemException {
         TicketDTO ticket = new TicketDTO();
         ArrayList<TicketProductDTO> art = articles.getArticles();
-        StatusCodeDTO statusCodeDTO = new StatusCodeDTO();
         ArrayList<TicketProductDTO> newArts = new ArrayList<>();
 
         float totalPrice = 0;
         for (TicketProductDTO prod : art) {
             ProductDTO tmp = productRepository.getProductById(prod.getProductId());
             if (tmp != null) {
-                totalPrice += tmp.getPrice() * tmp.getQuantity();
+                totalPrice += tmp.getPrice() * prod.getQuantity();
                 newArts.add(prod);
             } else {
                 throw new InvalidItemException();
             }
         }
-        ticket.setTotal(totalPrice);
-        ticket.setArticles(newArts);
-        ticket.setId(this.ticketId.incrementAndGet());
         return new TicketDTO(this.ticketId.incrementAndGet(),newArts,totalPrice);
 
 
@@ -51,13 +47,13 @@ public class PurchaseRequestServiceImple implements PurchaseRequestService{
         PurchaseRequestDTO purchaseRequestDTO = new PurchaseRequestDTO();
         StatusCodeDTO statusCodeDTO = new StatusCodeDTO();
         if (ticket.getId()==0){
-            statusCodeDTO.setCode(HttpStatus.NOT_FOUND);
+            statusCodeDTO.setCode(HttpStatus.NOT_FOUND.value());
             statusCodeDTO.setMessage("Could not find some of the items in the request.");
         }else
             purchaseRequestDTO.setTicket(ticket);
-            statusCodeDTO.setCode(HttpStatus.OK);
+            statusCodeDTO.setCode(HttpStatus.OK.value());
             statusCodeDTO.setMessage("La solicitud de compra se completo con exito.");
-
+        purchaseRequestDTO.setStatusCode(statusCodeDTO);
         return purchaseRequestDTO;
     }
 
