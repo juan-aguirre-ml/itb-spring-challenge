@@ -2,6 +2,7 @@ package com.itbchallenge.eshop.services;
 
 import com.itbchallenge.eshop.dtos.*;
 import com.itbchallenge.eshop.exceptions.InvalidItemException;
+import com.itbchallenge.eshop.exceptions.NotEnoughStockException;
 import com.itbchallenge.eshop.repositories.ProductRepository;
 import com.itbchallenge.eshop.repositories.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,10 @@ public class PurchaseRequestServiceImple implements PurchaseRequestService{
     @Autowired
     private ProductRepository productRepository;
 
-    private AtomicInteger ticketId = new AtomicInteger();
+    private final AtomicInteger ticketId = new AtomicInteger();
 
     @Override
-    public TicketDTO generateTicket(ArticlesDTO articles) throws InvalidItemException {
+    public TicketDTO generateTicket(ArticlesDTO articles) throws InvalidItemException, NotEnoughStockException {
         TicketDTO ticket = new TicketDTO();
         ArrayList<TicketProductDTO> art = articles.getArticles();
         ArrayList<TicketProductDTO> newArts = new ArrayList<>();
@@ -31,9 +32,12 @@ public class PurchaseRequestServiceImple implements PurchaseRequestService{
         float totalPrice = 0;
         for (TicketProductDTO prod : art) {
             ProductDTO tmp = productRepository.getProductById(prod.getProductId());
-            if (tmp != null) {
-                totalPrice += tmp.getPrice() * prod.getQuantity();
-                newArts.add(prod);
+            if (tmp != null) { //If product exists
+                if (tmp.getQuantity() >= prod.getQuantity()) { //Check Stock
+                    totalPrice += tmp.getPrice() * prod.getQuantity();
+                    newArts.add(prod);
+                }else
+                    throw new NotEnoughStockException();
             } else {
                 throw new InvalidItemException();
             }
@@ -53,11 +57,12 @@ public class PurchaseRequestServiceImple implements PurchaseRequestService{
             purchaseRequestDTO.setTicket(ticket);
             statusCodeDTO.setCode(HttpStatus.OK.value());
             statusCodeDTO.setMessage("La solicitud de compra se completo con exito.");
-        purchaseRequestDTO.setStatusCode(statusCodeDTO);
+
+            purchaseRequestDTO.setStatusCode(statusCodeDTO);
         return purchaseRequestDTO;
     }
 
-    public PurchaseRequestDTO addPurchaseRequest(ArticlesDTO articles) throws InvalidItemException {
+    public PurchaseRequestDTO addPurchaseRequest(ArticlesDTO articles) throws InvalidItemException, NotEnoughStockException {
         TicketDTO ticketDTO = generateTicket(articles);
         return generatePurchaseRequest(ticketDTO);
 

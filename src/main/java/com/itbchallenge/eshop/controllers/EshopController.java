@@ -2,6 +2,7 @@ package com.itbchallenge.eshop.controllers;
 
 import com.itbchallenge.eshop.dtos.*;
 import com.itbchallenge.eshop.exceptions.InvalidItemException;
+import com.itbchallenge.eshop.exceptions.NotEnoughStockException;
 import com.itbchallenge.eshop.services.EshopService;
 import com.itbchallenge.eshop.services.PurchaseRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class EshopController {
     }
 
     @PostMapping("/purchase-request")
-    public PurchaseRequestDTO postPurchaseRequest(@RequestBody ArticlesDTO articles) throws InvalidItemException {
+    public PurchaseRequestDTO postPurchaseRequest(@RequestBody ArticlesDTO articles) throws InvalidItemException, NotEnoughStockException {
         PurchaseRequestDTO purchaseRequest = ticketService.addPurchaseRequest(articles);
         return purchaseRequest;
     }
@@ -42,6 +43,15 @@ public class EshopController {
         error.setCode(HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.badRequest().body(error);
     }
+
+    @ExceptionHandler(InvalidItemException.class)
+    public ResponseEntity handlerException(NotEnoughStockException exception){
+        StatusCodeDTO error = new StatusCodeDTO();
+        error.setMessage(exception.getMessage());
+        error.setCode(HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.badRequest().body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity handlerException(Exception exception){
         ErrorDTO error = new ErrorDTO();
