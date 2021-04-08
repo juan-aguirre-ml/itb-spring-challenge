@@ -29,8 +29,8 @@ public class EshopService {
                 if (!key.equals("order")){
 
                     //Applying the necesary filters
-                    Predicate<ProductDTO> p1 = FilterBox.getFilter(key,arguments.get(key));
-                    productos = FilterBox.applyFilter(productos,p1);
+                    Predicate<ProductDTO> p1 = FilterBox.getProductFilter(key,arguments.get(key));
+                    productos = FilterBox.applyProductFilter(productos,p1);
 
                 }if (key.equals("order")){
 

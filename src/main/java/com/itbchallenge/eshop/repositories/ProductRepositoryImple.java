@@ -88,7 +88,7 @@ public class ProductRepositoryImple implements ProductRepository {
         ArrayList<ProductDTO> arr = this.getAllProducts();
         ArrayList<ProductDTO> ret = null;
         //Get the correct filter
-        Predicate<ProductDTO> p1 = FilterBox.getFilter(param1, value1);
+        Predicate<ProductDTO> p1 = FilterBox.getProductFilter(param1, value1);
 
         //Check if only one filter is passed
         if (p1 != null) {
